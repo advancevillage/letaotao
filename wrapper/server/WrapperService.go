@@ -8,7 +8,7 @@ import (
 
 func IndexProcessor(cookies []*http.Cookie) ([]byte, error) {
 	var wrapper = new(lw.WrapperModel)
-	wrapper.Set("restful api", "")
+	wrapper.Set("richard", "")
 	var response []byte
 	response, err := json.Marshal(*wrapper)
 	return response, err
