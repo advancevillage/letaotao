@@ -1,4 +1,4 @@
-package letaotao
+package services
 
 type SPU struct {
 	SpuID 		int 	`json:"spu_id"`

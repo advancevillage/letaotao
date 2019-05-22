@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"database/sql"
-	"github.com/advancevillage/letaotao"
+	la "github.com/advancevillage/letaotao/services"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -10,9 +10,9 @@ type CategoryRepository struct {
 	DB 	*sql.DB
 }
 
-func (r *CategoryRepository) Category(cat_id int) (*letaotao.Category, error) {
+func (r *CategoryRepository) Category(cat_id int) (*la.Category, error) {
 	var table = "category"
-	var cat = new(letaotao.Category)
+	var cat = new(la.Category)
 	var str = "SELECT * FROM " + table + " WHERE cat_id = ?"
 	stmt, err := r.DB.Prepare(str)
 	row := stmt.QueryRow(cat_id)
@@ -21,14 +21,14 @@ func (r *CategoryRepository) Category(cat_id int) (*letaotao.Category, error) {
 	return cat , err
 }
 
-func (r *CategoryRepository) Categories() ([]*letaotao.Category, error) {
+func (r *CategoryRepository) Categories() ([]*la.Category, error) {
 	var table = "category"
-	var cats []*letaotao.Category
+	var cats []*la.Category
 	var str = "SELECT * FROM " + table
 	stmt, err := r.DB.Prepare(str)
 	rows, _ := stmt.Query()
 	for rows.Next() {
-		var cat = new(letaotao.Category)
+		var cat = new(la.Category)
 		err = rows.Scan(&cat.CatID, &cat.CatName, &cat.CatCode, &cat.CreateTime, &cat.UpdateTime)
 		cats = append(cats, cat)
 	}
@@ -37,7 +37,7 @@ func (r *CategoryRepository) Categories() ([]*letaotao.Category, error) {
 	return cats, err
 }
 
-func (r *CategoryRepository) CreateCategory(cat *letaotao.Category) error {
+func (r *CategoryRepository) CreateCategory(cat *la.Category) error {
 	var table = "category"
 	var str = "INSERT INTO " + table + "(cat_name, cat_code, cat_create_time)VALUES(?,?,?)"
 	stmt, err := r.DB.Prepare(str)

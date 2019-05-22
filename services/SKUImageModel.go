@@ -1,4 +1,4 @@
-package letaotao
+package services
 
 
 type SKUImage struct {

@@ -1,4 +1,4 @@
-package letaotao
+package services
 
 type Category struct {
 	CatID 		int 		`json:"cat_id"`
