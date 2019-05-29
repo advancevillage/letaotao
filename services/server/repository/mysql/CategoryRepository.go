@@ -16,7 +16,7 @@ func (r *CategoryRepository) Category(cat_id int) (*la.Category, error) {
 	var str = "SELECT * FROM " + table + " WHERE cat_id = ?"
 	stmt, err := r.DB.Prepare(str)
 	row := stmt.QueryRow(cat_id)
-	err = row.Scan(&cat.CatID, &cat.CatName, &cat.CatCode, &cat.CreateTime, &cat.UpdateTime)
+	err = row.Scan(&cat.CatID, &cat.PCatID, &cat.CatNameKey, &cat.CatNameValue , &cat.CreateTime, &cat.UpdateTime)
 	defer stmt.Close()
 	return cat , err
 }
@@ -29,7 +29,7 @@ func (r *CategoryRepository) Categories() ([]*la.Category, error) {
 	rows, _ := stmt.Query()
 	for rows.Next() {
 		var cat = new(la.Category)
-		err = rows.Scan(&cat.CatID, &cat.CatName, &cat.CatCode, &cat.CreateTime, &cat.UpdateTime)
+		err = rows.Scan(&cat.CatID, &cat.PCatID, &cat.CatNameKey, &cat.CatNameValue , &cat.CreateTime, &cat.UpdateTime)
 		cats = append(cats, cat)
 	}
 	defer stmt.Close()
@@ -41,7 +41,7 @@ func (r *CategoryRepository) CreateCategory(cat *la.Category) error {
 	var table = "category"
 	var str = "INSERT INTO " + table + "(cat_name, cat_code, cat_create_time)VALUES(?,?,?)"
 	stmt, err := r.DB.Prepare(str)
-	_, err = stmt.Exec(cat.CatName, cat.CatCode, cat.CreateTime)
+	_, err = stmt.Exec(cat.PCatID, cat.CatNameKey, cat.CatNameValue ,cat.CreateTime)
 	defer  stmt.Close()
 	return err
 }
@@ -53,4 +53,20 @@ func (r *CategoryRepository) DeleteCategory(cat_id int) error {
 	_, err = stmt.Exec(cat_id)
 	defer stmt.Close()
 	return err
+}
+
+func (r *CategoryRepository) CategoryBy(p_cat_id int) ([]*la.Category, error) {
+	var table= "category"
+	var str= "SELECT * FROM " + table + " WHERE p_cat_id = ? AND cat_id > 1"
+	var cats []*la.Category
+	stmt, err := r.DB.Prepare(str)
+	rows, err := stmt.Query(p_cat_id)
+	for rows.Next() {
+		var cat = new(la.Category)
+		err = rows.Scan(&cat.CatID, &cat.PCatID, &cat.CatNameKey, &cat.CatNameValue , &cat.CreateTime, &cat.UpdateTime)
+		cats = append(cats,cat)
+	}
+	defer stmt.Close()
+	defer rows.Close()
+	return cats, err
 }

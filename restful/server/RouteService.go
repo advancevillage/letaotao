@@ -6,12 +6,13 @@ import (
 	lws "github.com/advancevillage/letaotao/wrapper/server"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
+	"strconv"
 )
 
 // HandlerFunc(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 func RoutePolicy() []*lr.Route {
 	var policy = []*lr.Route{
-		{Method:"GET", Path:"/", HandlerFunc:Index},
+		{Method:"GET", Path:"/", HandlerFunc:IndexPage},
 	}
 	return policy
 }
@@ -30,14 +31,23 @@ func SetApiHeader (w http.ResponseWriter) http.ResponseWriter {
 	return  w
 }
 
-func Index(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func IndexPage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	//url := r.URL
-	cookies := r.Cookies()
-	//headers := r.Header
+	//cookies := r.Cookies()
+	qs := r.URL.Query()
+	//@param: category
+	var cat_id int
+	if _, ok := qs["cat"]; ok {
+		cat_id, _ = strconv.Atoi(qs["cat"][0])
+	} else {
+		cat_id = 1
+	}
+
 	w = SetApiHeader(w)
-	response, err := lws.IndexProcessor(cookies)
+	response, err := lws.IndexProcessor(cat_id)
 	fmt.Println(err)
 	w.Write(response)
 }
+
 
 

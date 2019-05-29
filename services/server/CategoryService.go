@@ -5,6 +5,7 @@ import la "github.com/advancevillage/letaotao/services"
 type CategoryRepository interface {
 	Category(cat_id int) (*la.Category, error)
 	Categories() ([]*la.Category, error)
+	CategoryBy(p_cat_id int) ([]*la.Category, error)
 	CreateCategory(cat *la.Category) error
 	DeleteCategory(cat_id int) error
 }
@@ -27,4 +28,8 @@ func (s *CategoryService) CreateCategory(cat *la.Category) error {
 
 func (s *CategoryService) DeleteCategory(cat_id int) error {
 	return s.Repo.DeleteCategory(cat_id)
+}
+
+func (s *CategoryService) CategoryBy(p_cat_id int) ([]*la.Category, error) {
+	return s.Repo.CategoryBy(p_cat_id)
 }
