@@ -14,5 +14,5 @@ type CacheConfig struct {
 	Host 		string 		`json:"host"`
 	Port 		string 		`json:"port"`
 	Token 		string 		`json:"token"`
-	Schema		string 		`json:"schema"`
+	Schema		int 		`json:"schema"`
 }
