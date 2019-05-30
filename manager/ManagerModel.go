@@ -9,3 +9,10 @@ type DatabaseConfig struct {
 	Schema		string 		`json:"schema"`
 	CharSet		string 		`json:"charset"`
 }
+
+type CacheConfig struct {
+	Host 		string 		`json:"host"`
+	Port 		string 		`json:"port"`
+	Token 		string 		`json:"token"`
+	Schema		string 		`json:"schema"`
+}
