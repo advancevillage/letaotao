@@ -5,7 +5,7 @@ import (
 	lms "github.com/advancevillage/letaotao/manager/server"
 	ls "github.com/advancevillage/letaotao/services"
 	lss "github.com/advancevillage/letaotao/services/server"
-	lssrm "github.com/advancevillage/letaotao/services/server/repository/mysql"
+	lssrr "github.com/advancevillage/letaotao/services/server/repository/redis"
 	lw "github.com/advancevillage/letaotao/wrapper"
 	"strconv"
 )
@@ -13,7 +13,7 @@ import (
 func CategoryProcessor(cat_id int) (interface{}, error) {
 	//@param: cats 表示第一级分类，应用于网站menu导航栏
 	var cats []*ls.Category
-	var service = &lss.CategoryService{Repo:&lssrm.CategoryRepository{DB:lms.Conn()}}
+	var service = &lss.CategoryService{Repo:&lssrr.CategoryRepository{DB:lms.Conn(),Client:lms.ConnCache()}}
 	cats,err := service.CategoryBy(cat_id)
 	//获取分类树
 	//navigation
