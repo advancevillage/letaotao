@@ -51,6 +51,7 @@ func (r *CategoryRepository) CategoryBy(p_cat_id int) ([]*la.Category, error) {
 		}
 	} else {
 		repo := lssrm.CategoryRepository{DB:r.DB}
+
 		cats,err = repo.CategoryBy(p_cat_id)
 		pack := make(map[string]interface{})
 		for _,v :=range cats {

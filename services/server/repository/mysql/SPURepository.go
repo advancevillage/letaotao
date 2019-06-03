@@ -16,7 +16,7 @@ func (r *SPURepository) SPU(spu_id int) (*la.SPU, error){
 	var str = "SELECT * FROM " + table + " WHERE spu_id = ?"
 	stmt, err := r.DB.Prepare(str)
 	row := stmt.QueryRow(spu_id)
-	err = row.Scan(&spu.SpuID, &spu.SpuName, &spu.CatID, &spu.CreateTime, &spu.UpdateTime)
+	err = row.Scan(&spu.SpuID, &spu.SpuKey, &spu.CatID, &spu.CreateTime, &spu.UpdateTime, &spu.BrdID)
 	defer  stmt.Close()
 	return spu, err
 }
@@ -29,7 +29,29 @@ func (r *SPURepository) SPUs() ([]*la.SPU, error) {
 	rows, err := stmt.Query()
 	for rows.Next() {
 		var spu = new(la.SPU)
-		err = rows.Scan(&spu.SpuID, &spu.SpuName, &spu.CatID, &spu.CreateTime, &spu.UpdateTime)
+		err = rows.Scan(&spu.SpuID, &spu.SpuKey, &spu.CatID, &spu.CreateTime, &spu.UpdateTime, &spu.BrdID)
+		spus = append(spus, spu)
+	}
+	defer stmt.Close()
+	defer rows.Close()
+	return spus, err
+}
+
+func (r *SPURepository) SPUsBy(catIDs []int) ([]*la.SPU, error) {
+	var table = "spu"
+	var spus []*la.SPU
+	var temp []interface{}
+	var s = ""
+	for _, v :=range catIDs {
+		temp = append(temp, v)
+		s += "?,"
+	}
+	var str = "SELECT * FROM " + table + " WHERE cat_id in (" + s[0:len(s)-1]  + ")"
+	stmt, err := r.DB.Prepare(str)
+	rows, err := stmt.Query(temp...)
+	for rows.Next() {
+		var spu = new(la.SPU)
+		err = rows.Scan(&spu.SpuID, &spu.SpuKey, &spu.CatID, &spu.CreateTime, &spu.UpdateTime, &spu.BrdID)
 		spus = append(spus, spu)
 	}
 	defer stmt.Close()

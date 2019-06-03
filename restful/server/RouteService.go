@@ -35,18 +35,24 @@ func IndexPage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	//url := r.URL
 	//cookies := r.Cookies()
 	qs := r.URL.Query()
-	//@param: category
-	var cat_id int
+	//@param: catID			分类
+	//@param: pageID		页面
+	var catID,pageID int
 	if _, ok := qs["cat"]; ok {
-		cat_id, _ = strconv.Atoi(qs["cat"][0])
+		catID, _ = strconv.Atoi(qs["cat"][0])
 	} else {
-		cat_id = 1
+		catID = 1
+	}
+	if _, ok := qs["page"]; ok {
+		pageID, _ = strconv.Atoi(qs["page"][0])
+	} else {
+		pageID = 1
 	}
 
 	w = SetApiHeader(w)
-	response, err := lws.IndexProcessor(cat_id)
+	response, err := lws.IndexProcessor(catID,pageID)
 	fmt.Println(err)
-	w.Write(response)
+	_, _ = w.Write(response)
 }
 
 

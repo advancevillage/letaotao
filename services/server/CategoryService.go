@@ -8,6 +8,8 @@ type CategoryRepository interface {
 	CategoryBy(p_cat_id int) ([]*la.Category, error)
 	CreateCategory(cat *la.Category) error
 	DeleteCategory(cat_id int) error
+	CategorySubTree(p_cat_id int) (map[int][]int, error)
+	CategoryKey(catID int) (string, error)
 }
 
 type CategoryService struct {
@@ -32,4 +34,12 @@ func (s *CategoryService) DeleteCategory(cat_id int) error {
 
 func (s *CategoryService) CategoryBy(p_cat_id int) ([]*la.Category, error) {
 	return s.Repo.CategoryBy(p_cat_id)
+}
+
+func (s *CategoryService) CategorySubTree(p_cat_id int) (map[int][]int, error) {
+	return s.Repo.CategorySubTree(p_cat_id)
+}
+
+func (s *CategoryService) CategoryKey (catID int) (string, error) {
+	return s.Repo.CategoryKey(catID)
 }

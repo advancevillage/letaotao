@@ -15,5 +15,7 @@ type CategoryService interface {
 	CategoryBy(p_cat_id int) ([]*Category, error)
 	CreateCategory(cat *Category) error
 	DeleteCategory(cat_id int) error
+	CategorySubTree(p_cat_id int) (map[int][]int, error)
+	CategoryKey (catID int) (string, error)
 }
 
