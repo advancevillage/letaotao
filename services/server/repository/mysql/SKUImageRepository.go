@@ -40,7 +40,7 @@ func (r *SKUImageRepository) SKUImages() ([]*la.SKUImage, error) {
 func (r *SKUImageRepository) SKUImageOfSKU(sku_id int) ([]*la.SKUImage, error) {
 	var table = "sku_image"
 	var sis []*la.SKUImage
-	var str = "SELECT * FROM " + table + " WHERE sku_id = ?"
+	var str = "SELECT * FROM " + table + " WHERE sku_id = ? AND si_display = 1 AND si_delete = 0"
 	stmt, err := r.DB.Prepare(str)
 	rows, err := stmt.Query(sku_id)
 	for rows.Next() {

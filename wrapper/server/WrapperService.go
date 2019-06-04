@@ -57,8 +57,10 @@ func GoodsProcessor(catID int, pageID int) (map[string]interface{}, error){
 	var spuService = &lss.SPUService{Repo:&lssrm.SPURepository{DB:lms.Conn()}}
 	var catService = &lss.CategoryService{Repo:&lssrm.CategoryRepository{DB:lms.Conn()}}
 	var skuService = &lss.SKUService{Repo:&lssrm.SKURepository{DB:lms.Conn()}}
-	var spus   []*ls.SPU
-	var skus   []*ls.SKU
+	var skuImageService = &lss.SKUImageService{Repo:&lssrm.SKUImageRepository{DB:lms.Conn()}}
+	var spus     []*ls.SPU
+	var skus     []*ls.SKU
+	var skuImage []*ls.SKUImage
 	var err    error
 	var goods  = make(map[string]interface{})
 
@@ -80,6 +82,11 @@ func GoodsProcessor(catID int, pageID int) (map[string]interface{}, error){
 			skus, err = skuService.SKUsBy(spuID)
 			for _, tv :=range skus {
 				var good = make(map[string]interface{})
+				skuImage,_ = skuImageService.SKUImageOfSKU(tv.SkuID)
+				// 临时取图逻辑
+				for _, siv :=range skuImage {
+					good["image_url"] = siv.SiUrl
+				}
 				good["sku_id"] = tv.SkuID
 				good["price"]  = tv.SkuPrice
 				good["stock"]  = tv.SkuStock
