@@ -13,6 +13,7 @@ import (
 func RoutePolicy() []*lr.Route {
 	var policy = []*lr.Route{
 		{Method:"GET", Path:"/", HandlerFunc:IndexPage},
+		{Method:"GET", Path:"/goods/", HandlerFunc:GoodsPage},
 	}
 	return policy
 }
@@ -50,10 +51,27 @@ func IndexPage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	}
 
 	w = SetApiHeader(w)
-	response, err := lws.IndexProcessor(catID,pageID)
+	response, err := lws.IndexPageProcessor(catID,pageID)
+	//err 记录log
 	fmt.Println(err)
 	_, _ = w.Write(response)
 }
 
+//商品详情页
+func GoodsPage(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	qs := r.URL.Query()
+	//@param: skuKey   商品SKU
+	var skuKey string
+	if _, ok := qs["sku_key"]; ok {
+		skuKey = qs["sku_key"][0]
+	} else {
+		skuKey = "e411525a2af8b9922a9880a975a62b3e"
+	}
+	w = SetApiHeader(w)
+	response, err := lws.GoodsPageProcessor(skuKey)
+	// err 记录log
+	fmt.Println(err)
+	_, _ = w.Write(response)
+}
 
 

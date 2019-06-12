@@ -6,6 +6,7 @@ type SKURepository interface {
 	SKU(sku_id int) (*la.SKU, error)
 	SKUs() ([]*la.SKU, error)
 	SKUsBy(spuID int) ([]*la.SKU, error)
+	SKUByKey(skuKey string) (*la.SKU, error)
 }
 
 
@@ -23,4 +24,8 @@ func (s *SKUService) SKUs() ([]*la.SKU, error) {
 
 func (s *SKUService) SKUsBy(spuID int) ([]*la.SKU, error) {
 	return s.Repo.SKUsBy(spuID)
+}
+
+func (s *SKUService) SKUByKey(skuKey string) (*la.SKU, error) {
+	return s.Repo.SKUByKey(skuKey)
 }

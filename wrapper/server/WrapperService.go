@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func CategoryProcessor(catID int) (interface{},  error) {
+func CategoryUnit(catID int) (interface{},  error) {
 	//@param: cats 表示第一级分类，应用于网站menu导航栏  分类ID的所有信息
 	//@param: subCat 以catID 为父分类的子子分类树
 	var cats []*ls.Category
@@ -53,7 +53,7 @@ func CategoryProcessor(catID int) (interface{},  error) {
 	return navigate, err
 }
 
-func GoodsProcessor(catID int, pageID int) (map[string]interface{}, error){
+func GoodsUnit(catID int, pageID int) (map[string]interface{}, error){
 	var spuService = &lss.SPUService{Repo:&lssrm.SPURepository{DB:lms.Conn()}}
 	var catService = &lss.CategoryService{Repo:&lssrm.CategoryRepository{DB:lms.Conn()}}
 	var skuService = &lss.SKUService{Repo:&lssrm.SKURepository{DB:lms.Conn()}}
@@ -103,7 +103,7 @@ func GoodsProcessor(catID int, pageID int) (map[string]interface{}, error){
 	return goods, err
 }
 
-func IndexProcessor(catID int, pageID int) ([]byte, error) {
+func IndexPageProcessor(catID int, pageID int) ([]byte, error) {
 	var wrapper = new(lw.WrapperModel).Init()
 	//@brief: 组装页面接口
 	//@interface: navigate     导航栏接口
@@ -111,8 +111,8 @@ func IndexProcessor(catID int, pageID int) ([]byte, error) {
 	//@interface: carts		   购物车接口
 	//@interface: logo		   登录接口
 	//@interface: users		   用户接口
-	navigate, err := CategoryProcessor(catID)
-	goods, err    := GoodsProcessor(catID, pageID)
+	navigate, err := CategoryUnit(catID)
+	goods, err    := GoodsUnit(catID, pageID)
 	wrapper.Set("navigate", navigate, err)
 	wrapper.Set("goods", goods, err)
 	var response []byte
@@ -120,3 +120,17 @@ func IndexProcessor(catID int, pageID int) ([]byte, error) {
 	return response, err
 }
 
+func GoodsPageProcessor(skuKey string) ([]byte, error) {
+	var wrapper = new(lw.WrapperModel).Init()
+	var response []byte
+	var err		 error
+	//@interface: sku_attr   商品属性接口
+	//@interface: sku		 商品信息接口
+	sku, SKUBaseInfo, err := SKUBaseInfoByKeyUnit(skuKey)
+	skuAttr, err := SKUAttrBySKUID(SKUBaseInfo)
+
+	wrapper.Set("sku", sku, err)
+	wrapper.Set("sku_attr", skuAttr, err)
+	response, err = json.Marshal(*wrapper)
+	return response, err
+}

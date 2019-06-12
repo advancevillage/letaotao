@@ -49,3 +49,14 @@ func (r *SKURepository) SKUsBy(spuID int) ([]*la.SKU, error) {
 	}
 	return skus, err
 }
+
+func (r *SKURepository) SKUByKey(skuKey string) (*la.SKU, error) {
+	var table = "sku"
+	var sku = new(la.SKU)
+	var str = "SELECT * FROM " + table + " WHERE sku_key = ? LIMIT 1"
+	stmt, err := r.DB.Prepare(str)
+	row := stmt.QueryRow(skuKey)
+	err = row.Scan(&sku.SkuID, &sku.SkuKey, &sku.SkuPrice, &sku.SpuID, &sku.CreateTime, &sku.UpdateTime, &sku.SkuOnSale, &sku.DesID, &sku.SkuStock)
+	defer stmt.Close()
+	return sku, err
+}
