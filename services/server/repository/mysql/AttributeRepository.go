@@ -17,8 +17,8 @@ func (r *AttributeRepository) Attribute(atrbtID int) (*ls.Attribute, error) {
 	var err	  error
 	var str   = "SELECT atrbt_id,atrbt_key,atrbt_name,atrbt_delete,cat_id,atrbt_create_time,atrbt_last_update_time FROM " + table + " WHERE atrbt_id = ? LIMIT 1"
 	stmt, err := r.DB.Prepare(str)
+	defer stmt.Close()
 	row := stmt.QueryRow(atrbtID)
 	err = row.Scan(&attr.AtrbtID, &attr.AtrbtKey, &attr.AtrbtName, &attr.AtrbtDeleted, &attr.CatID, &attr.CreateTime, &attr.UpdateTime)
-	defer stmt.Close()
 	return attr, err
 }

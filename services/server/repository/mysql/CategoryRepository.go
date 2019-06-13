@@ -15,9 +15,9 @@ func (r *CategoryRepository) Category(cat_id int) (*la.Category, error) {
 	var cat = new(la.Category)
 	var str = "SELECT * FROM " + table + " WHERE cat_id = ?"
 	stmt, err := r.DB.Prepare(str)
+	defer stmt.Close()
 	row := stmt.QueryRow(cat_id)
 	err = row.Scan(&cat.CatID, &cat.PCatID, &cat.CatNameKey, &cat.CatNameValue , &cat.CreateTime, &cat.UpdateTime)
-	defer stmt.Close()
 	return cat , err
 }
 
@@ -26,14 +26,14 @@ func (r *CategoryRepository) Categories() ([]*la.Category, error) {
 	var cats []*la.Category
 	var str = "SELECT * FROM " + table
 	stmt, err := r.DB.Prepare(str)
+	defer stmt.Close()
 	rows, _ := stmt.Query()
+	defer rows.Close()
 	for rows.Next() {
 		var cat = new(la.Category)
 		err = rows.Scan(&cat.CatID, &cat.PCatID, &cat.CatNameKey, &cat.CatNameValue , &cat.CreateTime, &cat.UpdateTime)
 		cats = append(cats, cat)
 	}
-	defer stmt.Close()
-	defer rows.Close()
 	return cats, err
 }
 
@@ -41,8 +41,8 @@ func (r *CategoryRepository) CreateCategory(cat *la.Category) error {
 	var table = "category"
 	var str = "INSERT INTO " + table + "(cat_name, cat_code, cat_create_time)VALUES(?,?,?)"
 	stmt, err := r.DB.Prepare(str)
-	_, err = stmt.Exec(cat.PCatID, cat.CatNameKey, cat.CatNameValue ,cat.CreateTime)
 	defer  stmt.Close()
+	_, err = stmt.Exec(cat.PCatID, cat.CatNameKey, cat.CatNameValue ,cat.CreateTime)
 	return err
 }
 
@@ -50,8 +50,8 @@ func (r *CategoryRepository) DeleteCategory(cat_id int) error {
 	var table = "category"
 	var str = "DELETE FROM " + table + " WHERE cat_id = ?"
 	stmt, err := r.DB.Prepare(str)
-	_, err = stmt.Exec(cat_id)
 	defer stmt.Close()
+	_, err = stmt.Exec(cat_id)
 	return err
 }
 
@@ -60,14 +60,14 @@ func (r *CategoryRepository) CategoryBy(p_cat_id int) ([]*la.Category, error) {
 	var str= "SELECT * FROM " + table + " WHERE p_cat_id = ? AND cat_id > 1"
 	var cats []*la.Category
 	stmt, err := r.DB.Prepare(str)
+	defer stmt.Close()
 	rows, err := stmt.Query(p_cat_id)
+	defer rows.Close()
 	for rows.Next() {
 		var cat = new(la.Category)
 		err = rows.Scan(&cat.CatID, &cat.PCatID, &cat.CatNameKey, &cat.CatNameValue , &cat.CreateTime, &cat.UpdateTime)
 		cats = append(cats,cat)
 	}
-	defer stmt.Close()
-	defer rows.Close()
 	return cats, err
 }
 
@@ -81,6 +81,7 @@ func (r *CategoryRepository) CategorySubTree(p_cat_id int) (map[int][]int, error
 	var err   error
 	queue[i] = p_cat_id
 	stmt, err := r.DB.Prepare(str)
+	defer stmt.Close()
 	for ; j > i; {
 		p_cat_id = queue[i % cap(queue)]
 		i++
@@ -94,7 +95,6 @@ func (r *CategoryRepository) CategorySubTree(p_cat_id int) (map[int][]int, error
 		}
 		err = rows.Close()
 	}
-	defer stmt.Close()
 	return tree, err
 }
 
@@ -103,8 +103,8 @@ func (r *CategoryRepository) CategoryKey (catID int) (string, error) {
 	var str   = "SELECT cat_name_key FROM " + table + " WHERE cat_id = ? AND cat_id > 1 LIMIT 1"
 	var catNameKey = ""
 	stmt, err := r.DB.Prepare(str)
+	defer stmt.Close()
 	row := stmt.QueryRow(catID)
 	err = row.Scan(&catNameKey)
-	defer stmt.Close()
 	return catNameKey , err
 }

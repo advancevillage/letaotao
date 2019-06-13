@@ -18,7 +18,9 @@ func (r *SKUAttributeRepository) SKUAttributeBySKU(skuID int) ([]*ls.SKUAttribut
 	var skuAttrs []*ls.SKUAttribute
 	var str = "SELECT sku_id, atrbt_id, atrbt_value, sa_delete, sa_create_time, sa_update_time FROM " + table + " WHERE sku_id = ?"
 	stmt, err := r.DB.Prepare(str)
+	defer stmt.Close()
 	rows, err := stmt.Query(skuID)
+	defer rows.Close()
 	exist := make(map[string]*ls.SKUAttribute)
 	for rows.Next() {
 		var tDeleted int8
@@ -44,8 +46,6 @@ func (r *SKUAttributeRepository) SKUAttributeBySKU(skuID int) ([]*ls.SKUAttribut
 			skuAttrs = append(skuAttrs, skuAttr)
 		}
 	}
-	defer stmt.Close()
-	defer rows.Close()
 	return skuAttrs, err
 }
 
@@ -54,7 +54,9 @@ func (r *SKUAttributeRepository) SKUAttributeByAttr(atrbtID int) ([]*ls.SKUAttri
 	var skuAttrs []*ls.SKUAttribute
 	var str = "SELECT sku_id, atrbt_id, atrbt_value, sa_delete, sa_create_time, sa_update_time FROM " + table + " WHERE atrbt_id = ?"
 	stmt, err := r.DB.Prepare(str)
+	defer stmt.Close()
 	rows, err := stmt.Query(atrbtID)
+	defer rows.Close()
 	exist := make(map[string]*ls.SKUAttribute)
 	for rows.Next() {
 		var tDeleted int8
@@ -79,8 +81,6 @@ func (r *SKUAttributeRepository) SKUAttributeByAttr(atrbtID int) ([]*ls.SKUAttri
 			skuAttrs = append(skuAttrs, skuAttr)
 		}
 	}
-	defer stmt.Close()
-	defer rows.Close()
 	return skuAttrs, err
 }
 
@@ -89,7 +89,9 @@ func (r *SKUAttributeRepository) SKUAttributeBySKUAndAttr(skuId int, atrbtID int
 	var skuAttrs []*ls.SKUAttribute
 	var str = "SELECT sku_id, atrbt_id, atrbt_value, sa_delete, sa_create_time, sa_update_time FROM " + table + " WHERE sku_id = ? AND atrbt_id = ?"
 	stmt, err := r.DB.Prepare(str)
+	defer stmt.Close()
 	rows, err := stmt.Query(skuId, atrbtID)
+	defer rows.Close()
 	exist := make(map[string]*ls.SKUAttribute)
 	for rows.Next() {
 		var tDeleted int8
@@ -114,7 +116,5 @@ func (r *SKUAttributeRepository) SKUAttributeBySKUAndAttr(skuId int, atrbtID int
 			skuAttrs = append(skuAttrs, skuAttr)
 		}
 	}
-	defer stmt.Close()
-	defer rows.Close()
 	return skuAttrs, err
 }
