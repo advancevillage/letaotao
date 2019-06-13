@@ -17,3 +17,17 @@ func (m *WrapperModel) Set(key string, value interface{}, error interface{}) {
 func (m *WrapperModel) Get() (interface{}, interface{}) {
 	return m.Data, m.Error
 }
+
+func (m *WrapperModel) Catcher() {
+	if re := recover(); re != nil {
+		m.Error = re
+		m.Data  = nil
+	}
+}
+
+func (m *WrapperModel) Checker(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+

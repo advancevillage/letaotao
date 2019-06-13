@@ -102,9 +102,14 @@ func GoodsUnit(catID int, pageID int) (map[string]interface{}, error){
 	}
 	return goods, err
 }
-
-func IndexPageProcessor(catID int, pageID int) ([]byte, error) {
+//必须有变量的返回值 response []byte, err error
+func IndexPageProcessor(catID int, pageID int) (response []byte, err error) {
 	var wrapper = new(lw.WrapperModel).Init()
+	defer func() {
+		response, err = json.Marshal(*wrapper)
+	}()
+	defer wrapper.Catcher()
+
 	//@brief: 组装页面接口
 	//@interface: navigate     导航栏接口
 	//@interface: goods		   商品列表页接口
@@ -115,22 +120,23 @@ func IndexPageProcessor(catID int, pageID int) ([]byte, error) {
 	goods, err    := GoodsUnit(catID, pageID)
 	wrapper.Set("navigate", navigate, err)
 	wrapper.Set("goods", goods, err)
-	var response []byte
-	response, err = json.Marshal(*wrapper)
-	return response, err
+
+	return
 }
 
-func GoodsPageProcessor(skuKey string) ([]byte, error) {
+func GoodsPageProcessor(skuKey string) (response []byte, err error) {
 	var wrapper = new(lw.WrapperModel).Init()
-	var response []byte
-	var err		 error
+	defer func() {
+		response, err = json.Marshal(*wrapper)
+	}()
+	defer wrapper.Catcher()
+
 	//@interface: sku_attr   商品属性接口
 	//@interface: sku		 商品信息接口
 	sku, SKUBaseInfo, err := SKUBaseInfoByKeyUnit(skuKey)
 	skuAttr, err := SKUAttrBySKUID(SKUBaseInfo)
-
 	wrapper.Set("sku", sku, err)
 	wrapper.Set("sku_attr", skuAttr, err)
-	response, err = json.Marshal(*wrapper)
-	return response, err
+
+	return
 }
