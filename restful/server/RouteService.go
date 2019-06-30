@@ -18,13 +18,14 @@ func RoutePolicy() []*lr.Route {
 	return policy
 }
 
-func NewRouter() *httprouter.Router {
+func NewRouter() (err error){
 	policy := RoutePolicy()
 	router := httprouter.New()
 	for _, v := range policy {
 		router.Handle(v.Method, v.Path, v.HandlerFunc)
 	}
-	return router
+	err = http.ListenAndServe(":13147", router)
+	return
 }
 
 func SetApiHeader (w http.ResponseWriter) http.ResponseWriter {

@@ -36,6 +36,13 @@
  * JWT 验证
  * 缓存中间件 扩展 
  * 日志模块   
+ * GO程序运行在Docker环境中
+ * GO程序存储到源仓库中 通过包管理工具apt/yum/brew下载运行
+ 
+## DOING
+ * systemd 方式管理GO执行文件
+ * 
+ 
  
 ## DOC
  * https://godoc.org/github.com/go-redis/redis 
