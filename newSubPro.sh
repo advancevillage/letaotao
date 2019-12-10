@@ -49,6 +49,38 @@ function InitProject() {
        - 函数命名
          * 动词+名词 eg: QueryMerchandiseById() error
          * 至少返回一个error类型
+       - 接口命名
+         * 单方法接口: 以方法名+后缀er作为接口的名称
+            type Reader interface {
+               Read(p []byte) (n int, err error)
+            }
+
+            type Writer interface {
+               Write(p []byte) (n int, err error)
+            }
+
+            type Closer interface {
+               Close() error
+            }
+         * 内嵌接口: 把两个接口名拼接起来作为新接口名称
+            type ReadWriter interface {
+               Reader
+               Writer
+            }
+
+            type ReadCloser interface {
+               Reader
+               Closer
+            }
+
+            type WriteCloser interface {
+               Writer
+               Closer
+            }
+         * 多方法接口:  以I字母开头
+            type IRead interface{
+              Read(p []byte) (n int, err error)
+            }
     2: SQL规范
          * fmt.Sprintf()
          eg: sql := fmt.Sprintf("" +
