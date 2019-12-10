@@ -90,7 +90,9 @@ function InitProject() {
                     ";",
                     TableName, param)
     3: DSL规范
-
+    4: 编码注意
+      - 函数编码 幂等性
+      - 模块编码 高内聚,低耦合
 #### 目录结构
     `basename ${p}`
        |
